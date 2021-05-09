@@ -1,21 +1,24 @@
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "react-query";
-import ZendeskIcon from "./components/ZendeskIcon";
-import TicketIcon from "./components/TicketIcon";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
 import TicketPage from "./components/TicketPage/TicketPage";
+import ViewTicket from "./components/ViewTicket/ViewTicket";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="App">
-        <nav className="green-bg">
-          <ZendeskIcon className="zendesk-icon" />
-          <TicketIcon className="ticket-icon" />
-        </nav>
-        <TicketPage />
-      </div>
+      <BrowserRouter>
+        <div>
+          <Sidebar />
+          <Switch>
+            <Route path="/" exact component={TicketPage} />
+            <Route path="/:id" component={ViewTicket} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

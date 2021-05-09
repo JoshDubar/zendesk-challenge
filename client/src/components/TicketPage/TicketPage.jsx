@@ -1,12 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TicketTable from "./TicketTable/TicketTable";
-import useTickets from "../../custom-hooks/useTickets";
+import { useTickets, useTicket } from "../../custom-hooks";
 import "./TicketPage.css";
 import TicketStatus from "./TicketTable/TicketStatus/TicketStatus";
+import { useHistory } from "react-router";
 
 const TicketPage = () => {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useTickets();
+  const history = useHistory();
+  const [ticketId, setTicketId] = useState(undefined);
+  const { data: allData, isLoading: allIsLoading } = useTickets();
+  const { data: ticket, isLoading: ticketIsLoading } = useTicket(ticketId);
+
   const columns = useMemo(
     () => [
       {
@@ -23,37 +28,69 @@ const TicketPage = () => {
         accessor: "col3",
       },
       {
-        Header: "Type",
+        Header: "Requested",
         accessor: "col4",
+        Cell: ({ cell: { value } }) =>
+          new Intl.DateTimeFormat("en-GB").format(new Date(value)),
+      },
+      {
+        Header: "Type",
+        accessor: "col5",
         Cell: ({ cell: { value } }) => (value ? value : "-"),
       },
     ],
     []
   );
-  const ticketList = data?.data?.tickets.map((ticket) => {
+  const ticketList = allData?.data?.tickets.map((ticket) => {
     return {
       col1: ticket.status,
       col2: ticket.subject,
       col3: ticket.requester_id,
-      col4: ticket.type,
+      col4: ticket.created_at,
+      col5: ticket.type,
     };
   });
   const tableData = useMemo(() => ticketList, [ticketList]);
-  if (isLoading) return <div>Loading tickets</div>;
+
+  const handleRowClick = (id) => {
+    setTicketId(parseInt(id) + 1);
+  };
+
+  useEffect(() => {
+    if (ticket) {
+      const {
+        description,
+        created_at,
+        status,
+        subject,
+        requester_id,
+        id,
+      } = ticket.data.ticket;
+      history.push(`/${id}`, {
+        description,
+        created_at,
+        status,
+        subject,
+        requester_id,
+      });
+    }
+  }, [ticket, history]);
+
   return (
     <div className="ticket-page">
       <div className="ticket-page-container">
         <div className="title-section">
           <div className="tickets-title green">Your tickets</div>
-          <div className="tickets-count">101 tickets</div>
         </div>
-        <TicketTable
-          columns={columns}
-          setPage={setPage}
-          data={tableData}
-          currentPage={page}
-          totalPage={5}
-        />
+        {allIsLoading ? (
+          <div className="loading" />
+        ) : (
+          <TicketTable
+            columns={columns}
+            data={tableData}
+            handleRowClick={handleRowClick}
+          />
+        )}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { useTable, usePagination } from "react-table";
 import "./TicketTable.css";
 
-const TicketTable = ({ setPage, columns, data, currentPage, totalPage }) => {
+const TicketTable = ({ columns, data, handleRowClick }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -26,8 +26,6 @@ const TicketTable = ({ setPage, columns, data, currentPage, totalPage }) => {
     },
     usePagination
   );
-  console.log(canNextPage);
-  console.log(canPreviousPage);
   const headerDetails = headerGroups[0];
   return (
     <div className="table-container">
@@ -45,12 +43,12 @@ const TicketTable = ({ setPage, columns, data, currentPage, totalPage }) => {
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
-            console.log(row);
             return (
               <tr
                 key={row.id}
                 {...row.getRowProps()}
                 className="rows-container"
+                onClick={() => handleRowClick(row.id)}
               >
                 {row.cells.map((cell) => (
                   <td className="green" {...cell.getCellProps()}>
