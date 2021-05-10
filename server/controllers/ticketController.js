@@ -1,27 +1,34 @@
 const axios = require("axios");
 const config = require("../config");
-const getAllTickets = async (req, res, next) => {
+
+const getAllTickets = async (req, res) => {
+  const { next, cursor } = req.query;
+
   try {
     const { data } = await axios.get(
-      `${process.env.ZENDESK_DOMAIN}/tickets.json`,
+      `${process.env.ZENDESK_DOMAIN}/tickets.json?page[size]=25${
+        !!cursor
+          ? `&page[${next === "true" ? "after" : "before"}]=${cursor}`
+          : ""
+      }`,
       config
     );
-    console.log(data);
     res.status(200).json({ message: "success", data });
   } catch (e) {
-    res.status(401).send({ message: e.message });
+    res.status(e?.response?.status || 500).send({ message: e.message });
   }
 };
 
 const getTicketById = async (req, res) => {
   const id = req.params.id;
   try {
-    const {
-      data: { ticket },
-    } = await axios.get(`${process.env.ZENDESK_DOMAIN}/tickets/${id}`, config);
-    res.status(200).send({ message: "success", ticket });
+    const { data } = await axios.get(
+      `${process.env.ZENDESK_DOMAIN}/tickets/${id}`,
+      config
+    );
+    res.status(200).send({ message: "success", data });
   } catch (e) {
-    res.status(401).send(e);
+    res.status(e?.response?.status || 500).send({ message: e.message });
   }
 };
 

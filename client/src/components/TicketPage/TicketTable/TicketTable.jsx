@@ -2,27 +2,38 @@ import React from "react";
 import { useTable, usePagination } from "react-table";
 import "./TicketTable.css";
 
-const TicketTable = ({ columns, data, handleRowClick }) => {
+const TicketTable = ({
+  columns,
+  data,
+  currentPage,
+  setCurrentPage,
+  handleRowClick,
+  handlePageChange,
+  hasMore,
+}) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    previousPage,
-    nextPage,
     page,
-    canNextPage,
-    canPreviousPage,
-    state: { pageIndex },
   } = useTable(
     {
       columns,
       data,
-
-      initialState: {
-        pageIndex: 0,
-        pageSize: 25,
+      useControlledState: (state) => {
+        return React.useMemo(
+          () => ({
+            ...state,
+            pageIndex: currentPage,
+          }),
+          [state]
+        );
       },
+      initialState: {
+        pageIndex: currentPage,
+      },
+      manualPagination: true,
     },
     usePagination
   );
@@ -33,10 +44,14 @@ const TicketTable = ({ columns, data, handleRowClick }) => {
         <thead>
           <tr className="table-header" {...headerDetails.getHeaderGroupProps()}>
             {headerDetails.headers.slice(0, 1).map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              <th key={column.id} {...column.getHeaderProps()}>
+                {column.render("Header")}
+              </th>
             ))}
             {headerDetails.headers.slice(1).map((column) => (
-              <th {...column.getHeaderProps}>{column.render("Header")}</th>
+              <th key={column.id} {...column.getHeaderProps}>
+                {column.render("Header")}
+              </th>
             ))}
           </tr>
         </thead>
@@ -51,7 +66,7 @@ const TicketTable = ({ columns, data, handleRowClick }) => {
                 onClick={() => handleRowClick(row.id)}
               >
                 {row.cells.map((cell) => (
-                  <td className="green" {...cell.getCellProps()}>
+                  <td key={cell.id} className="green" {...cell.getCellProps()}>
                     {cell.render("Cell")}
                   </td>
                 ))}
@@ -61,11 +76,14 @@ const TicketTable = ({ columns, data, handleRowClick }) => {
         </tbody>
       </table>
       <div className="pagination-container">
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+        <button
+          onClick={() => handlePageChange(false)}
+          disabled={currentPage === 1}
+        >
           {"<"}
         </button>
-        <div>{pageIndex + 1}</div>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
+        <div>{currentPage}</div>
+        <button onClick={() => handlePageChange(true)} disabled={!hasMore}>
           {">"}
         </button>
       </div>

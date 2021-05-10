@@ -7,47 +7,73 @@ import { useHistory } from "react-router";
 
 const TicketPage = () => {
   const [page, setPage] = useState(1);
+  const [queryData, setQueryData] = useState({
+    cursor: "",
+    next: true,
+  });
   const history = useHistory();
   const [ticketId, setTicketId] = useState(undefined);
-  const { data: allData, isLoading: allIsLoading } = useTickets();
-  const { data: ticket, isLoading: ticketIsLoading } = useTicket(ticketId);
+  const { data: ticketListData, isLoading } = useTickets({
+    ...queryData,
+  });
+  const { data: ticket } = useTicket(ticketId);
 
+  const handlePageChange = (nextPressed) => {
+    if (nextPressed) {
+      setPage((page) => page + 1);
+      setQueryData({
+        cursor: ticketListData.data.meta.after_cursor,
+        next: true,
+      });
+    } else if (!nextPressed) {
+      setPage((page) => page - 1);
+      setQueryData({
+        cursor: ticketListData.data.meta.before_cursor,
+        next: false,
+      });
+    }
+  };
   const columns = useMemo(
     () => [
       {
-        Header: "",
+        Header: "ID",
         accessor: "col1",
+      },
+      {
+        Header: "",
+        accessor: "col2",
         Cell: ({ cell: { value } }) => <TicketStatus status={value} />,
       },
       {
         Header: "Subject",
-        accessor: "col2",
-      },
-      {
-        Header: "Requester",
         accessor: "col3",
       },
       {
-        Header: "Requested",
+        Header: "Requester",
         accessor: "col4",
+      },
+      {
+        Header: "Requested",
+        accessor: "col5",
         Cell: ({ cell: { value } }) =>
           new Intl.DateTimeFormat("en-GB").format(new Date(value)),
       },
       {
         Header: "Type",
-        accessor: "col5",
+        accessor: "col6",
         Cell: ({ cell: { value } }) => (value ? value : "-"),
       },
     ],
     []
   );
-  const ticketList = allData?.data?.tickets.map((ticket) => {
+  const ticketList = ticketListData?.data?.tickets.map((ticket) => {
     return {
-      col1: ticket.status,
-      col2: ticket.subject,
-      col3: ticket.requester_id,
-      col4: ticket.created_at,
-      col5: ticket.type,
+      col1: ticket.id,
+      col2: ticket.status,
+      col3: ticket.subject,
+      col4: ticket.requester_id,
+      col5: ticket.created_at,
+      col6: ticket.type,
     };
   });
   const tableData = useMemo(() => ticketList, [ticketList]);
@@ -82,13 +108,17 @@ const TicketPage = () => {
         <div className="title-section">
           <div className="tickets-title green">Your tickets</div>
         </div>
-        {allIsLoading ? (
+        {isLoading ? (
           <div className="loading" />
         ) : (
           <TicketTable
             columns={columns}
             data={tableData}
             handleRowClick={handleRowClick}
+            currentPage={page}
+            setCurrentPage={setPage}
+            handlePageChange={handlePageChange}
+            hasMore={ticketListData.data.meta.has_more}
           />
         )}
       </div>

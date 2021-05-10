@@ -43,10 +43,6 @@ table {
   background-color: unset;
 }
 
-.rows-container > :first-child {
-  padding-left: 0.5rem;
-}
-
 .pagination-container {
   display: flex;
   position: absolute;

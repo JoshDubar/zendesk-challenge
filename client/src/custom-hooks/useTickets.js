@@ -1,27 +1,20 @@
 const { useQuery } = require("react-query");
 const axios = require("axios");
 
-export default function useTickets() {
+export default function useTickets({ cursor, next }) {
   return useQuery(
-    "tickets",
+    ["tickets", { cursor, next }],
     async () => {
-      const res = await axios.get(`http://localhost:4001/tickets`);
-      return res.data;
+      return axios
+        .get(`${process.env.REACT_APP_SERVER_URL}/tickets`, {
+          params: {
+            cursor,
+            next,
+          },
+        })
+        .then((res) => res.data)
+        .catch((err) => alert("Error loading ticket data"));
     },
-    { keepPreviousData: true }
+    { fetchPolicy: "no-cache" }
   );
 }
-
-// const { useQuery } = require('react-query');
-// const axios = require('axios');
-
-// export default function useSchools(page, perPage) {
-//   return useQuery(
-//     ['schools', page, perPage],
-//     async () => {
-//       const res = await axios.get(`/api/schools?perPage=${perPage}&page=${page}`);
-//       return res.data;
-//     },
-//     { keepPreviousData: true }
-//   );
-// }

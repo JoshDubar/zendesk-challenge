@@ -5,8 +5,10 @@ export default function useTickets(id) {
   return useQuery(
     ["ticket", id],
     async () => {
-      const res = await axios.get(`http://localhost:4001/tickets/${id}`);
-      return res;
+      return axios
+        .get(`${process.env.REACT_APP_SERVER_URL}/tickets/${id}`)
+        .then((res) => res.data)
+        .catch((err) => alert(`Error loading ticket ${id} data`));
     },
     { enabled: !!id }
   );

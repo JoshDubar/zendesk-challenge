@@ -1,8 +1,9 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./ViewTicket.css";
 
 const ViewTicket = ({ location }) => {
+  const history = useHistory();
   const {
     description,
     created_at,
@@ -10,10 +11,12 @@ const ViewTicket = ({ location }) => {
     subject,
     requester_id,
   } = location?.state;
-  console.log(location);
   return (
     <div className="view-ticket-page">
       <div className="main-view-page">
+        <div className="back" onClick={() => history.push("/")}>
+          {"<"} back
+        </div>
         <div className="view-ticket-page-container">
           <div className="title-section green">
             <div className="tickets-title">{subject}</div>
