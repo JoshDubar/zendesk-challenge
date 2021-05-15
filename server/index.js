@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const ticketRoutes = require("./routes/ticketRouter");
+const { response } = require("express");
 
 // initialise express server
 const app = express();
@@ -14,12 +15,11 @@ app.use(express.json());
 app.use("/tickets", ticketRoutes);
 
 // bad request error handling
-app.use((req, _, next) => {
+app.use((req, res, next) => {
   const err = new Error(`Route: ${req.originalUrl} does not exist.`);
-  err.status = 404;
-  next(err);
+  res.status(404).send({ message: err.message });
 });
 
-app.listen(port, () => {
+module.exports = app.listen(port, () => {
   console.log(`The server is listening on port ${port}!`);
 });

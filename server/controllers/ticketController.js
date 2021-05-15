@@ -20,7 +20,7 @@ const getAllTickets = async (req, res) => {
 };
 
 const getTicketById = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   try {
     const { data } = await axios.get(
       `${process.env.ZENDESK_DOMAIN}/tickets/${id}`,
