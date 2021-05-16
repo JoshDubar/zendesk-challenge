@@ -8,7 +8,7 @@
 
 For this project, I decided to use React.js for the Frontend, and Node.js/Express for the backend. 
 
-I decided to go with React for the frontend as it is what I know best, and I wanted the chance to use a few libraries I have been meaning to learn for a while now: React-query and React-table. These were both very useful, React-query especially has a very friendly caching system which was quite useful in ensuring that our api was not called more than needed.
+I decided to go with React for the frontend as it is what I know best, and I wanted the chance to use a few libraries I have been meaning to learn for a while now: React-query and React-table. These were both very useful, React-query especially has a very friendly caching system which was quite useful in ensuring that our api was not called more than needed. I wrote a few basic tests for my TicketTable component, using react-testing-library (RTL). These tests were not extremely extensive and if I had more time I would write tests for my other components as well, along with mocking my react-query queries.
 
 For the backend, I used Node.js and Express as these are also the technologies I am the most familiar with for creating APIs. I decided to use express over the http module as it abstracts away the complexity of setting up an HTTP server, letting me focus on the task at hand. It also leads to much easier abstract of logic, and usage of the MVC (In this case, without the Views) pattern. For testing the backend I used Mocha and chai, to run unit tests run the command ```npm run test``` in the server directory.
 
@@ -41,3 +41,5 @@ The below will contain detailed instructions on how to set up this project and r
 4. In your favourite text editor, add this line to the .env file ```REACT_APP_SERVER_URL=http://localhost:4000```.
 5. Ensure that your server is already running, and then finally run ```npm start```!
 
+#### Tests
+Run tests in both directories with ```npm run test```
