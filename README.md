@@ -1,5 +1,8 @@
 # Zendesk challenge 2021
 
+Frontend is hosted here: https://main--sad-jang-97d306.netlify.app/
+Backend is hosted here: https://zendesk-server.herokuapp.com/
+
 ## Content
 - [Summary](#summary)
 - [Installation and Usage](#installation-and-usage)
