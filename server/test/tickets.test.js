@@ -46,23 +46,33 @@ describe("Tickets API", () => {
     });
   });
   describe("GET /ticket/:id", () => {
+    const ticketId = 6;
     it("Should get a single ticket of ID 6", (done) => {
       chai
         .request(server)
-        .get("/tickets/6")
+        .get(`/tickets/${ticketId}`)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.data.ticket.should.be.an("object");
-          res.body.data.ticket.id.should.equal(6);
+          res.body.data.ticket.id.should.equal(ticketId);
           done();
         });
     });
     it("Should get a 404 (ticket with id doesn't exist)", (done) => {
       chai
         .request(server)
-        .get("/tickets/999")
+        .get("/tickets/99999")
         .end((err, res) => {
           res.should.have.status(404);
+          done();
+        });
+    });
+    it("Should get a 400 (ticket with invalid id)", (done) => {
+      chai
+        .request(server)
+        .get("/tickets/abc")
+        .end((err, res) => {
+          res.should.have.status(400);
           done();
         });
     });
