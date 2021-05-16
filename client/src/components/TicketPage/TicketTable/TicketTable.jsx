@@ -6,37 +6,32 @@ const TicketTable = ({
   columns,
   data,
   currentPage,
-  setCurrentPage,
   handleRowClick,
   handlePageChange,
   hasMore,
 }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-  } = useTable(
-    {
-      columns,
-      data,
-      useControlledState: (state) => {
-        return React.useMemo(
-          () => ({
-            ...state,
-            pageIndex: currentPage,
-          }),
-          [state]
-        );
+  debugger;
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
+    useTable(
+      {
+        columns,
+        data,
+        useControlledState: (state) => {
+          return React.useMemo(
+            () => ({
+              ...state,
+              pageIndex: currentPage,
+            }),
+            [state]
+          );
+        },
+        initialState: {
+          pageIndex: currentPage,
+        },
+        manualPagination: true,
       },
-      initialState: {
-        pageIndex: currentPage,
-      },
-      manualPagination: true,
-    },
-    usePagination
-  );
+      usePagination
+    );
   const headerDetails = headerGroups[0];
   return (
     <div className="table-container">
@@ -79,11 +74,16 @@ const TicketTable = ({
         <button
           onClick={() => handlePageChange(false)}
           disabled={currentPage === 1}
+          data-testid="lt-button"
         >
           {"<"}
         </button>
-        <div>{currentPage}</div>
-        <button onClick={() => handlePageChange(true)} disabled={!hasMore}>
+        <div data-testid="current-page">{currentPage}</div>
+        <button
+          onClick={() => handlePageChange(true)}
+          disabled={!hasMore}
+          data-testid="gt-button"
+        >
           {">"}
         </button>
       </div>
