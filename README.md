@@ -24,7 +24,7 @@ The below will contain detailed instructions on how to set up this project and r
 
 #### Before anything else
 1. Clone the repository
-2. Install node.js/npm
+2. Install node.js (v14 or greater)
 
 #### Server Installation:
 1. Enter the server directory ```cd server```.
