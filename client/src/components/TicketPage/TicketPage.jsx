@@ -17,7 +17,6 @@ const TicketPage = () => {
     ...queryData,
   });
   const { data: ticket } = useTicket(ticketId);
-
   const handlePageChange = (nextPressed) => {
     if (nextPressed) {
       setPage((page) => page + 1);
@@ -84,14 +83,8 @@ const TicketPage = () => {
 
   useEffect(() => {
     if (ticket) {
-      const {
-        description,
-        created_at,
-        status,
-        subject,
-        requester_id,
-        id,
-      } = ticket.data.ticket;
+      const { description, created_at, status, subject, requester_id, id } =
+        ticket.data.ticket;
       history.push(`/${id}`, {
         description,
         created_at,
@@ -101,7 +94,7 @@ const TicketPage = () => {
       });
     }
   }, [ticket, history]);
-
+  console.log(ticketListData);
   return (
     <div className="ticket-page">
       <div className="ticket-page-container">
@@ -110,7 +103,7 @@ const TicketPage = () => {
         </div>
         {isLoading ? (
           <div className="loading" />
-        ) : (
+        ) : ticketListData ? (
           <TicketTable
             columns={columns}
             data={tableData}
@@ -118,8 +111,12 @@ const TicketPage = () => {
             currentPage={page}
             setCurrentPage={setPage}
             handlePageChange={handlePageChange}
-            hasMore={ticketListData.data.meta.has_more}
+            hasMore={ticketListData?.data?.meta?.has_more}
           />
+        ) : (
+          <div className="error">
+            ⚠ There was an error loading your tickets!
+          </div>
         )}
       </div>
     </div>

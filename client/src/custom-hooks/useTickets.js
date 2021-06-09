@@ -13,7 +13,9 @@ export default function useTickets({ cursor, next }) {
           },
         })
         .then((res) => res.data)
-        .catch((err) => alert("Error loading ticket data"));
+        .catch((err) => {
+          console.log(err);
+        });
     },
     { fetchPolicy: "no-cache" }
   );

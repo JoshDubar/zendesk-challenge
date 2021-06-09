@@ -10,7 +10,6 @@ const TicketTable = ({
   handlePageChange,
   hasMore,
 }) => {
-  debugger;
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page } =
     useTable(
       {
